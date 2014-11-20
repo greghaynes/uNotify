@@ -1,17 +1,9 @@
 package net.greghaynes.unotify;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import net.greghaynes.messagenotifier.R;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -41,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String PROPERTY_APP_VERSION = "0.1";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    String SENDER_ID = "862587437296";
+    String SENDER_ID = "562865790243";
     
 	GoogleCloudMessaging gcm;
 	Context context;
@@ -197,16 +189,6 @@ public class MainActivity extends ActionBarActivity {
                     regid = gcm.register(SENDER_ID);
                     msg = "Device registered, registration ID=" + regid;
 
-                    // You should send the registration ID to your server over HTTP,
-                    // so it can use GCM/HTTP or CCS to send messages to your app.
-                    // The request to your server should be authenticated if your app
-                    // is using accounts.
-                    sendRegistrationIdToBackend();
-
-                    // For this demo: we don't need to send it because the device
-                    // will send upstream messages to a server that echo back the
-                    // message using the 'from' address in the message.
-
                     // Persist the regID - no need to register again.
                     storeRegistrationId(context, regid);
                 } catch (IOException ex) {
@@ -222,43 +204,6 @@ public class MainActivity extends ActionBarActivity {
             protected void onPostExecute(String msg) {
             }
         }.execute(null, null, null);
-    }
-    
-    private void sendRegistrationIdToBackend() {
-    	String uri = "http://greghaynes.net/gcm_regid/" + regid;
-    	new AsyncTask<String, String, String>() {
-    	    @Override
-    	    protected String doInBackground(String... uri) {
-    	        HttpClient httpclient = new DefaultHttpClient();
-    	        HttpResponse response;
-    	        String responseString = null;
-    	        try {
-    	            response = httpclient.execute(new HttpGet(uri[0]));
-    	            StatusLine statusLine = response.getStatusLine();
-    	            if(statusLine.getStatusCode() == HttpStatus.SC_OK){
-    	                ByteArrayOutputStream out = new ByteArrayOutputStream();
-    	                response.getEntity().writeTo(out);
-    	                out.close();
-    	                responseString = out.toString();
-    	            } else{
-    	                //Closes the connection.
-    	                response.getEntity().getContent().close();
-    	                throw new IOException(statusLine.getReasonPhrase());
-    	            }
-    	        } catch (ClientProtocolException e) {
-    	            //TODO Handle problems..
-    	        } catch (IOException e) {
-    	            //TODO Handle problems..
-    	        }
-    	        return responseString;
-    	    }
-
-    	    @Override
-    	    protected void onPostExecute(String result) {
-    	        super.onPostExecute(result);
-    	        //Do anything with response..
-    	    }
-    	}.execute(uri, null, null);
     }
     
     /**
