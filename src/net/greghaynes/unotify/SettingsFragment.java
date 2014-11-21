@@ -1,6 +1,6 @@
 package net.greghaynes.unotify;
 
-import net.greghaynes.messagenotifier.R;
+import net.greghaynes.unotify.R;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 

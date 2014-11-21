@@ -2,7 +2,7 @@ package net.greghaynes.unotify;
 
 import java.io.IOException;
 
-import net.greghaynes.messagenotifier.R;
+import net.greghaynes.unotify.R;
 
 
 import com.google.android.gms.common.ConnectionResult;
